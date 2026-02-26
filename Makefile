@@ -81,10 +81,10 @@ docker-logs:
 # ─── Base de données (Prisma) ─────────────────────────────────────────────────
 
 db-migrate:
-	npm run prisma migrate dev --prefix backend
+	cd backend && npx prisma migrate dev
 
 db-reset:
-	npm run prisma migrate reset --prefix backend
+	cd backend && npx prisma migrate reset
 
 db-studio:
-	npm run prisma studio --prefix backend
+	cd backend && npx prisma studio
