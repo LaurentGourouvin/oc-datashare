@@ -59,6 +59,38 @@ make dev
 ```bash
 make help
 ```
+## Workflow Git
+
+```
+main
+ └── develop
+      ├── feature/us01-upload
+      ├── feature/us03-register
+      └── ...
+```
+
+- **`main`** — branche de production, stable. On ne pousse jamais directement dessus.
+- **`develop`** — branche d'intégration, reçoit toutes les features terminées.
+- **`feature/*`** — une branche par User Story ou tâche, créée depuis `develop`.
+
+**Cycle de travail :**
+
+```bash
+# 1. Créer sa branche depuis develop
+git checkout develop
+git checkout -b feature/us03-register
+
+# 2. Coder, commiter
+git commit -m "feat(auth): ajout endpoint register"
+
+# 3. Merger sur develop une fois terminé
+git checkout develop
+git merge feature/us03-register
+
+# 4. Quand develop est stable → merge sur main (livraison)
+git checkout main
+git merge develop
+```
 
 ## Structure du projet
 
