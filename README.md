@@ -18,13 +18,16 @@ Prototype de plateforme de transfert sécurisé de fichiers, inspiré de WeTrans
 
 - [Node.js](https://nodejs.org/) v20+
 - [Docker](https://www.docker.com/) + Docker Compose
-- [Make](https://www.gnu.org/software/make/)
+- Make
+  - **macOS** : inclus avec Xcode Command Line Tools → `xcode-select --install`
+  - **Linux** : `sudo apt install make`
+  - **Windows** : installer [Git Bash](https://gitforwindows.org/) ou [WSL2](https://learn.microsoft.com/fr-fr/windows/wsl/install), Make est inclus
 
 ## Installation
 
 ```bash
 # 1. Cloner le repo
-git clone https://github.com/<ton-username>/datashare.git
+git clone https://github.com/LaurentGourouvin/oc-datashare.git
 cd datashare
 
 # 2. Installer les dépendances
