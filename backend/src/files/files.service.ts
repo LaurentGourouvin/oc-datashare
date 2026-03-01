@@ -39,6 +39,7 @@ export interface HistoryResultSafer {
   size: number;
   expiresAt: Date;
   createdAt: Date;
+  isExpired: boolean;
 }
 
 export interface HistoryResult {
@@ -129,7 +130,10 @@ export class FilesService {
     });
 
     return {
-      data: files,
+      data: files.map((file) => ({
+        ...file,
+        isExpired: file.expiresAt < new Date(),
+      })),
     };
   }
   /**
