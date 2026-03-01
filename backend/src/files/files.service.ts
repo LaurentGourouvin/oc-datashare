@@ -8,6 +8,7 @@ import {
 import * as path from 'path';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs/promises';
+import { File } from '../../generated/prisma/client';
 
 const FORBIDDEN_MIME_TYPES = [
   'application/x-msdownload',
@@ -28,6 +29,20 @@ export interface UploadResult {
 
 export interface DeleteResult {
   originalName: string;
+}
+
+export interface HistoryResultSafer {
+  id: string;
+  token: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  expiresAt: Date;
+  createdAt: Date;
+}
+
+export interface HistoryResult {
+  data: HistoryResultSafer[];
 }
 
 @Injectable()
@@ -97,6 +112,26 @@ export class FilesService {
     };
   }
 
+  async history(userId: string): Promise<HistoryResult> {
+    const files = await this.prisma.file.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        id: true,
+        token: true,
+        originalName: true,
+        mimeType: true,
+        size: true,
+        expiresAt: true,
+        createdAt: true,
+      },
+    });
+
+    return {
+      data: files,
+    };
+  }
   /**
    * Valide le type MIME, l'extension et la taille du fichier.
    * Lève une BadRequestException en cas de violation.
