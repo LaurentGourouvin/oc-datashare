@@ -40,32 +40,25 @@ Ces vulnérabilités sont présentes dans des outils qui ne sont jamais déploy�
 | `lodash` | Moderate | Dépendance de `@prisma/dev` : dev only |
 | `chevrotain` | Moderate | Dépendance de `@prisma/dev` : dev only |
 
-### ✅ Corrigées
+### ⚠️ Non corrigées: hors de notre périmètre
 
-| Package | Sévérité | CVE                                                                                                           | Correction |
-|---|---|---------------------------------------------------------------------------------------------------------------|---|
-| `multer <= 2.0.2` | High | - https://github.com/advisories/GHSA-xf7r-hgr6-v32p <br />- https://github.com/advisories/GHSA-xf7r-hgr6-v32p | Mise à jour vers `multer@2.1.0` |
+Ces vulnérabilités concernent des dépendances de production mais ne peuvent pas être corrigées sans breaking change ou car elles dépendent d'une mise à jour tierce.
 
-```text
-CVE-2026-2359:
-A vulnerability in Multer versions < 2.1.0 allows an attacker to trigger a Denial of Service (DoS) by dropping connection during file upload, 
-potentially causing resource exhaustion.
+| Package | Sévérité | CVE | Décision                                                                                                                                          |
+|---|---|---|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| `multer <= 2.0.2` | High | GHSA-xf7r-hgr6-v32p, GHSA-v52c-386h-88mc | Non corrigeable : `@nestjs/platform-express` embarque sa propre version de multer. Le fix dépend d'une mise à jour de `@nestjs/platform-express`. |
+| `hono <= 4.11.9` | Moderate | GHSA-9r54-q6cx-xmh5 | Non corrigeable : `hono` est une dépendance de `@prisma/dev`, lui-même inclus dans `prisma >= 6.20.0`. Le fix dépend d'une mise à jour de Prisma. |
 
-CVE-2026-3304:
-A vulnerability in Multer versions < 2.1.0 allows an attacker to trigger a Denial of Service (DoS) by sending malformed requests, 
-potentially causing resource exhaustion.
-```
-**Correction appliquée :** mise à jour vers `multer@2.1.0` qui corrige les deux vulnérabilités.
+---
 
-**Détail de la vulnérabilité multer :** une attaque DoS (Denial of Service) consiste à saturer un serveur pour épuiser ses ressources. Dans le cas de multer, un attaquant pouvait déclencher cette attaque en interrompant une connexion pendant un upload, empêchant le nettoyage correct des ressources. La version `2.1.0` corrige ce comportement.
+## Mesures alternatives :
 
-### ⚠️ Non corrigées: breaking changes incompatibles avec la stack actuelle
+Concernant `multer` (DoS via resource exhaustion) :
 
-Ces vulnérabilités concernent des dépendances de production mais le correctif proposé par npm introduit un downgrade majeur incompatible avec notre stack.
-
-| Package | Sévérité | CVE | Décision                                                                                                                                                         |
-|---|---|---|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `hono <= 4.11.9` | Moderate | GHSA-9r54-q6cx-xmh5 | Non corrigée: `hono` est une dépendance de `@prisma/dev`, lui-même inclus dans `prisma >= 6.20.0`. Le fix dépend d'une mise à jour de Prisma |
+- La taille maximale des fichiers est limitée à 1 Go via `limits.fileSize` dans la config Multer
+- Les types MIME et extensions de fichiers sont validés avant traitement
+- L'endpoint d'upload est protégé par authentification JWT — pas accessible publiquement
+- Une surveillance des logs est en place pour détecter des comportements anormaux
 
 ---
 
