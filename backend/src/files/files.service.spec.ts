@@ -13,6 +13,7 @@ const mockPrismaService = {
     create: jest.fn(),
     findUnique: jest.fn(),
     delete: jest.fn(),
+    findMany: jest.fn(),
   },
 };
 
@@ -90,7 +91,9 @@ describe('FilesService', () => {
         service.uploadFile(mockFile({ originalname: 'virus.exe' }), 'user-123'),
       ).rejects.toThrow(BadRequestException);
     });
+  });
 
+  describe('deleteFile', () => {
     it('should delete a file and return metadata', async () => {
       mockPrismaService.file.findUnique.mockResolvedValue({
         id: 'uuid-123',
@@ -140,6 +143,35 @@ describe('FilesService', () => {
       await expect(service.deleteFile('token-123', 'user-123')).rejects.toThrow(
         ForbiddenException,
       );
+    });
+  });
+
+  describe('history', () => {
+    it('should return files for authenticated user', async () => {
+      mockPrismaService.file.findMany = jest.fn().mockResolvedValue([
+        {
+          id: 'uuid-123',
+          token: 'token-123',
+          originalName: 'test.pdf',
+          mimeType: 'application/pdf',
+          size: 1024,
+          expiresAt: new Date(),
+          createdAt: new Date(),
+        },
+      ]);
+
+      const result = await service.history('user-123');
+
+      expect(result.data).toHaveLength(1);
+      expect(result.data[0].originalName).toBe('test.pdf');
+    });
+
+    it('should return empty array if no files', async () => {
+      mockPrismaService.file.findMany = jest.fn().mockResolvedValue([]);
+
+      const result = await service.history('user-123');
+
+      expect(result.data).toHaveLength(0);
     });
   });
 

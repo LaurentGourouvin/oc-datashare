@@ -2,7 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
-  Delete, Param,
+  Delete,
+  Get,
+  Param,
   Post,
   Request,
   UploadedFile,
@@ -15,6 +17,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -22,7 +25,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { JwtPayload } from '../auth/jwt.strategy';
 import { JwtGuard } from '../auth/jwt/jwt.guard';
 import { UploadFileDto } from './dto/upload-file.dto';
-import { DeleteResult, FilesService, UploadResult } from './files.service';
+import {
+  DeleteResult,
+  FilesService,
+  UploadResult,
+  HistoryResult,
+} from './files.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -84,7 +92,6 @@ export class FilesController {
     return this.filesService.uploadFile(file, req.user.sub, dto.expiresAt);
   }
 
-
   @Delete('/:token')
   @UseGuards(JwtGuard)
   async delete(
@@ -92,5 +99,36 @@ export class FilesController {
     @Param('token') token: string,
   ): Promise<DeleteResult> {
     return this.filesService.deleteFile(token, req.user.sub);
+  }
+
+  @Get('history')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Get files history for authenticated user' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of uploaded files',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              token: { type: 'string' },
+              originalName: { type: 'string' },
+              mimeType: { type: 'string' },
+              size: { type: 'number' },
+              expiresAt: { type: 'string', format: 'date-time' },
+              createdAt: { type: 'string', format: 'date-time' },
+            },
+          },
+        },
+      },
+    },
+  })
+  async history(@Request() req: { user: JwtPayload }): Promise<HistoryResult> {
+    return this.filesService.history(req.user.sub);
   }
 }
