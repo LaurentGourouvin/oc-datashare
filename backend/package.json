@@ -97,7 +97,8 @@
       "src/app.module.ts",
       "src/app.controller.ts",
       "src/app.service.ts",
-      ".*\\.module\\.ts$"
+      ".*\\.module\\.ts$",
+      "jwt.strategy.ts"
     ]
   }
 }
