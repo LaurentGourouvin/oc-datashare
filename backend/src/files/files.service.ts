@@ -1,14 +1,17 @@
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Injectable,
   Logger,
   NotFoundException,
+  StreamableFile,
 } from '@nestjs/common';
 import * as path from 'path';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs/promises';
-import { File } from '../../generated/prisma/client';
+import { createReadStream } from 'node:fs';
 
 const FORBIDDEN_MIME_TYPES = [
   'application/x-msdownload',
@@ -135,6 +138,39 @@ export class FilesService {
         isExpired: file.expiresAt < new Date(),
       })),
     };
+  }
+
+  async download(token: string): Promise<StreamableFile> {
+    const file = await this.prisma.file.findUnique({
+      where: {
+        token: token,
+      },
+      select: {
+        id: true,
+        token: true,
+        originalName: true,
+        mimeType: true,
+        size: true,
+        expiresAt: true,
+        createdAt: true,
+        storagePath: true,
+      },
+    });
+
+    if (!file) {
+      throw new NotFoundException('File not found.');
+    }
+
+    if (file.expiresAt < new Date()) {
+      throw new HttpException('Link has expired', HttpStatus.GONE);
+    }
+
+    const stream = createReadStream(file.storagePath);
+
+    return new StreamableFile(stream, {
+      type: file.mimeType,
+      disposition: `attachment; filename="${encodeURIComponent(file.originalName)}"`,
+    });
   }
   /**
    * Valide le type MIME, l'extension et la taille du fichier.

@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Request,
+  StreamableFile,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -131,5 +132,14 @@ export class FilesController {
   })
   async history(@Request() req: { user: JwtPayload }): Promise<HistoryResult> {
     return this.filesService.history(req.user.sub);
+  }
+
+  @Get('download/:token')
+  @ApiOperation({ summary: 'Download a file via its public token' })
+  @ApiResponse({ status: 200, description: 'File stream' })
+  @ApiResponse({ status: 404, description: 'File not found' })
+  @ApiResponse({ status: 410, description: 'Link has expired' })
+  async download(@Param('token') token: string): Promise<StreamableFile> {
+    return this.filesService.download(token);
   }
 }

@@ -7,6 +7,7 @@ import { Readable } from 'stream';
 const mockFilesService = {
   uploadFile: jest.fn(),
   deleteFile: jest.fn(),
+  download: jest.fn(),
 };
 
 const mockFile = (
@@ -92,6 +93,19 @@ describe('FilesController', () => {
         'token-123',
         'user-123',
       );
+    });
+  });
+
+  describe('download', () => {
+    it('should call filesService.download and return StreamableFile', async () => {
+      mockFilesService.download = jest.fn().mockResolvedValue({
+        stream: new Readable(),
+      });
+
+      const result = await controller.download('token-123');
+
+      expect(mockFilesService.download).toHaveBeenCalledWith('token-123');
+      expect(result).toBeDefined();
     });
   });
 });
