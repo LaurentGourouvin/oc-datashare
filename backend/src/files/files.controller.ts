@@ -122,6 +122,7 @@ export class FilesController {
               size: { type: 'number' },
               expiresAt: { type: 'string', format: 'date-time' },
               createdAt: { type: 'string', format: 'date-time' },
+              isExpired: { type: 'boolean' },
             },
           },
         },
