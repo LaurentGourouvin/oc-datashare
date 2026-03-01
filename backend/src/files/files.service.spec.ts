@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
   NotFoundException,
 } from '@nestjs/common';
 import { Readable } from 'stream';
@@ -172,6 +173,35 @@ describe('FilesService', () => {
       const result = await service.history('user-123');
 
       expect(result.data).toHaveLength(0);
+    });
+  });
+
+  describe('download', () => {
+    it('should throw NotFoundException if file not found', async () => {
+      mockPrismaService.file.findUnique.mockResolvedValue(null);
+
+      await expect(service.download('invalid-token')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should throw HttpException 410 if file is expired', async () => {
+      mockPrismaService.file.findUnique.mockResolvedValue({
+        id: 'uuid-123',
+        token: 'token-123',
+        originalName: 'test.pdf',
+        mimeType: 'application/pdf',
+        size: 1024,
+        storagePath: '/uploads/user-123/uuid.pdf',
+        expiresAt: new Date('2020-01-01'),
+        createdAt: new Date(),
+        userId: 'user-123',
+        filePassword: null,
+      });
+
+      await expect(service.download('token-123')).rejects.toThrow(
+        HttpException,
+      );
     });
   });
 
