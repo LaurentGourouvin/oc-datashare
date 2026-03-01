@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete, Param,
   Post,
   Request,
   UploadedFile,
@@ -21,7 +22,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { JwtPayload } from '../auth/jwt.strategy';
 import { JwtGuard } from '../auth/jwt/jwt.guard';
 import { UploadFileDto } from './dto/upload-file.dto';
-import { FilesService, UploadResult } from './files.service';
+import { DeleteResult, FilesService, UploadResult } from './files.service';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -81,5 +82,15 @@ export class FilesController {
     }
 
     return this.filesService.uploadFile(file, req.user.sub, dto.expiresAt);
+  }
+
+
+  @Delete('/:token')
+  @UseGuards(JwtGuard)
+  async delete(
+    @Request() req: { user: JwtPayload },
+    @Param('token') token: string,
+  ): Promise<DeleteResult> {
+    return this.filesService.deleteFile(token, req.user.sub);
   }
 }

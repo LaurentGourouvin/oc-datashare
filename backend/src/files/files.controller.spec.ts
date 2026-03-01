@@ -6,6 +6,7 @@ import { Readable } from 'stream';
 
 const mockFilesService = {
   uploadFile: jest.fn(),
+  deleteFile: jest.fn(),
 };
 
 const mockFile = (
@@ -75,6 +76,22 @@ describe('FilesController', () => {
           { user: mockUser },
         ),
       ).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('delete', () => {
+    it('should call filesService.deleteFile and return result', async () => {
+      mockFilesService.deleteFile = jest.fn().mockResolvedValue({
+        originalName: 'test.pdf',
+      });
+
+      const result = await controller.delete({ user: mockUser }, 'token-123');
+
+      expect(result.originalName).toBe('test.pdf');
+      expect(mockFilesService.deleteFile).toHaveBeenCalledWith(
+        'token-123',
+        'user-123',
+      );
     });
   });
 });

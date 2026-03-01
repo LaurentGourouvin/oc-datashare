@@ -1,6 +1,13 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import * as path from 'path';
 import { PrismaService } from '../prisma/prisma.service';
+import * as fs from 'fs/promises';
 
 const FORBIDDEN_MIME_TYPES = [
   'application/x-msdownload',
@@ -17,6 +24,10 @@ export interface UploadResult {
   expiresAt: Date;
   originalName: string;
   size: number;
+}
+
+export interface DeleteResult {
+  originalName: string;
 }
 
 @Injectable()
@@ -55,6 +66,34 @@ export class FilesService {
       expiresAt: record.expiresAt,
       originalName: record.originalName,
       size: record.size,
+    };
+  }
+
+  async deleteFile(tokenUuid: string, userId: string): Promise<DeleteResult> {
+    const file = await this.prisma.file.findUnique({
+      where: { token: tokenUuid },
+    });
+
+    if (!file) {
+      throw new NotFoundException('File not found.');
+    }
+
+    if (file.userId !== userId) {
+      throw new ForbiddenException('Not authorized.');
+    }
+
+    await this.prisma.file.delete({
+      where: { token: tokenUuid },
+    });
+
+    try {
+      await fs.unlink(file.storagePath);
+    } catch {
+      this.logger.warn(`File not found on the server: ${file.storagePath}`);
+    }
+
+    return {
+      originalName: file.originalName,
     };
   }
 

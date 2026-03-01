@@ -1,12 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilesService } from './files.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { BadRequestException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Readable } from 'stream';
 
 const mockPrismaService = {
   file: {
     create: jest.fn(),
+    findUnique: jest.fn(),
+    delete: jest.fn(),
   },
 };
 
@@ -83,6 +89,57 @@ describe('FilesService', () => {
       await expect(
         service.uploadFile(mockFile({ originalname: 'virus.exe' }), 'user-123'),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should delete a file and return metadata', async () => {
+      mockPrismaService.file.findUnique.mockResolvedValue({
+        id: 'uuid-123',
+        token: 'token-123',
+        originalName: 'test.pdf',
+        size: 1024,
+        storagePath: '/uploads/user-123/uuid.pdf',
+        mimeType: 'application/pdf',
+        createdAt: new Date(),
+        expiresAt: new Date(),
+        userId: 'user-123',
+        filePassword: null,
+      });
+
+      mockPrismaService.file.delete.mockResolvedValue({
+        originalName: 'test.pdf',
+      });
+
+      const result = await service.deleteFile('token-123', 'user-123');
+
+      expect(result.originalName).toBe('test.pdf');
+      expect(mockPrismaService.file.delete).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw NotFoundException if file not found', async () => {
+      mockPrismaService.file.findUnique.mockResolvedValue(null);
+
+      await expect(service.deleteFile('token-123', 'user-123')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should throw ForbiddenException if file belongs to another user', async () => {
+      mockPrismaService.file.findUnique.mockResolvedValue({
+        id: 'uuid-123',
+        token: 'token-123',
+        originalName: 'test.pdf',
+        size: 1024,
+        storagePath: '/uploads/other-user/uuid.pdf',
+        mimeType: 'application/pdf',
+        createdAt: new Date(),
+        expiresAt: new Date(),
+        userId: 'other-user',
+        filePassword: null,
+      });
+
+      await expect(service.deleteFile('token-123', 'user-123')).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 
