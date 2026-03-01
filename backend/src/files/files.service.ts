@@ -10,7 +10,7 @@ const FORBIDDEN_MIME_TYPES = [
 
 const FORBIDDEN_EXTENSIONS = ['.exe', '.bat', '.sh', '.cmd'];
 
-const MAX_FILE_SIZE = 1_073_741_824; // 1 Go
+const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE ?? '1073741824', 10);
 
 export interface UploadResult {
   token: string;
@@ -48,7 +48,7 @@ export class FilesService {
       },
     });
 
-    this.logger.log(`Fichier uploadé : id=${record.id} userId=${userId}`);
+    this.logger.log(`File uploaded: id=${record.id} userId=${userId}`);
 
     return {
       token: record.token,
@@ -65,21 +65,17 @@ export class FilesService {
   private validateFile(file: Express.Multer.File): void {
     if (file.size > MAX_FILE_SIZE) {
       throw new BadRequestException(
-        'Le fichier dépasse la taille maximale autorisée (1 Go).',
+        'File size exceeds the maximum allowed size (1GB).',
       );
     }
 
     if (FORBIDDEN_MIME_TYPES.includes(file.mimetype)) {
-      throw new BadRequestException(
-        `Type MIME interdit : ${file.mimetype}`,
-      );
+      throw new BadRequestException('File type not allowed');
     }
 
     const ext = path.extname(file.originalname).toLowerCase();
     if (FORBIDDEN_EXTENSIONS.includes(ext)) {
-      throw new BadRequestException(
-        `Extension de fichier interdite : ${ext}`,
-      );
+      throw new BadRequestException('File type not allowed');
     }
   }
 
@@ -91,11 +87,22 @@ export class FilesService {
     const maxExpiry = new Date();
     maxExpiry.setDate(maxExpiry.getDate() + 7);
 
+    const minExpiry = new Date();
+    minExpiry.setDate(minExpiry.getDate() + 1);
+
     if (!expiresAt) {
       return maxExpiry;
     }
 
     const requested = new Date(expiresAt);
-    return requested > maxExpiry ? maxExpiry : requested;
+
+    if (isNaN(requested.getTime())) {
+      return maxExpiry;
+    }
+
+    if (requested < minExpiry) return minExpiry;
+    if (requested > maxExpiry) return maxExpiry;
+
+    return requested;
   }
 }

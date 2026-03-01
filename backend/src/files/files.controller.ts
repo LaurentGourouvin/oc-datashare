@@ -22,8 +22,10 @@ import { JwtPayload } from '../auth/jwt.strategy';
 import { JwtGuard } from '../auth/jwt/jwt.guard';
 import { UploadFileDto } from './dto/upload-file.dto';
 import { FilesService, UploadResult } from './files.service';
+import * as fs from 'fs';
+import * as path from 'path';
 
-@ApiTags('files')
+@ApiTags('Files')
 @ApiBearerAuth()
 @Controller('files')
 export class FilesController {
@@ -34,15 +36,26 @@ export class FilesController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: process.env.UPLOAD_DIR ?? './uploads',
-        filename: (_req, _file, cb) => {
-          cb(null, uuidv4());
+        destination: (req, _file, cb) => {
+          const user = req.user as JwtPayload;
+          const userDir = path.join(
+            process.env.UPLOAD_DIR ?? './uploads',
+            user.sub,
+          );
+          fs.mkdirSync(userDir, { recursive: true });
+          cb(null, userDir);
+        },
+        filename: (_req, file, cb) => {
+          const ext = path.extname(file.originalname).toLowerCase();
+          cb(null, `${uuidv4()}${ext}`);
         },
       }),
-      limits: { fileSize: 1_073_741_824 },
+      limits: {
+        fileSize: parseInt(process.env.MAX_FILE_SIZE ?? '1073741824', 10),
+      },
     }),
   )
-  @ApiOperation({ summary: 'Upload un fichier (authentifié)' })
+  @ApiOperation({ summary: 'Upload a file (authenticated)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -53,7 +66,7 @@ export class FilesController {
         expiresAt: {
           type: 'string',
           format: 'date-time',
-          description: "Date d'expiration (max 7 jours)",
+          description: 'Expiration date (max 7 days)',
         },
       },
     },
@@ -64,7 +77,7 @@ export class FilesController {
     @Request() req: { user: JwtPayload },
   ): Promise<UploadResult> {
     if (!file) {
-      throw new BadRequestException('Aucun fichier fourni.');
+      throw new BadRequestException('No file provided.');
     }
 
     return this.filesService.uploadFile(file, req.user.sub, dto.expiresAt);
