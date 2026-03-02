@@ -18,6 +18,7 @@ import {
   ApiBody,
   ApiConsumes,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -81,6 +82,20 @@ export class FilesController {
       },
     },
   })
+  @ApiResponse({
+    status: 201,
+    description: 'File uploaded successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        token: { type: 'string' },
+        originalName: { type: 'string' },
+        expiresAt: { type: 'string', format: 'date-time' },
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'No file provided or invalid file' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   async upload(
     @UploadedFile() file: Express.Multer.File,
     @Body() dto: UploadFileDto,
@@ -95,6 +110,24 @@ export class FilesController {
 
   @Delete('/:token')
   @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Delete a file by its token (authenticated)' })
+  @ApiParam({ name: 'token', description: 'File token (UUID)', type: 'string' })
+  @ApiResponse({
+    status: 200,
+    description: 'File deleted successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        originalName: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden: file belongs to another user',
+  })
+  @ApiResponse({ status: 404, description: 'File not found' })
   async delete(
     @Request() req: { user: JwtPayload },
     @Param('token') token: string,
