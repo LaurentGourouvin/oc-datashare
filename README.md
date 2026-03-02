@@ -59,6 +59,37 @@ make dev
 ```bash
 make help
 ```
+
+## Tests de performance (k6)
+
+### Installation de k6
+
+```bash
+# macOS
+brew install k6
+
+# Linux
+sudo gpg -k
+sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+sudo apt-get update && sudo apt-get install k6
+```
+
+### Lancer le test
+
+```bash
+# 1. S'assurer que le backend tourne
+make dev
+
+# 2. Récupérer un token JWT via /auth/login et le renseigner dans k6/upload-test.js
+
+# 3. Lancer le test depuis le dossier k6/
+cd k6
+k6 run upload-test.js
+```
+
+Les résultats et leur analyse sont disponibles dans [`PERF.md`](./PERF.md).
+
 ## Workflow Git
 
 ```
@@ -98,6 +129,7 @@ git merge develop
 datashare/
 ├── backend/          # API NestJS
 ├── frontend/         # App React
+├── k6/               # Scripts de tests de performance
 ├── docker-compose.yml
 ├── Makefile
 └── README.md
@@ -105,7 +137,7 @@ datashare/
 
 ## Documentation
 
-- [`TESTING.md`](./TESTING.md) — Plan de tests et couverture
-- [`SECURITY.md`](./SECURITY.md) — Sécurité et vulnérabilités
-- [`PERF.md`](./PERF.md) — Tests de performance
-- [`MAINTENANCE.md`](./MAINTENANCE.md) — Procédures de maintenance
+- [`TESTING.md`](./docs/TESTING.md) : Plan de tests et couverture
+- [`SECURITY.md`](./docs/SECURITY.md) : Sécurité et vulnérabilités
+- [`PERF.md`](./docs/PERF.md) : Tests de performance
+- [`MAINTENANCE.md`](./docs/MAINTENANCE.md) : Procédures de maintenance
