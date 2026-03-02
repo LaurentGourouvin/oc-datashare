@@ -8,6 +8,7 @@ const mockFilesService = {
   uploadFile: jest.fn(),
   deleteFile: jest.fn(),
   download: jest.fn(),
+  history: jest.fn(),
 };
 
 const mockFile = (
@@ -106,6 +107,30 @@ describe('FilesController', () => {
 
       expect(mockFilesService.download).toHaveBeenCalledWith('token-123');
       expect(result).toBeDefined();
+    });
+  });
+
+  describe('history', () => {
+    it('should call filesService.history and return files', async () => {
+      mockFilesService.history = jest.fn().mockResolvedValue({
+        data: [
+          {
+            id: 'uuid-123',
+            token: 'token-123',
+            originalName: 'test.pdf',
+            mimeType: 'application/pdf',
+            size: 1024,
+            expiresAt: new Date(),
+            createdAt: new Date(),
+            isExpired: false,
+          },
+        ],
+      });
+
+      const result = await controller.history({ user: mockUser });
+
+      expect(mockFilesService.history).toHaveBeenCalledWith('user-123');
+      expect(result.data).toHaveLength(1);
     });
   });
 });

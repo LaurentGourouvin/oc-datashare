@@ -15,6 +15,7 @@ const mockPrismaService = {
     findUnique: jest.fn(),
     delete: jest.fn(),
     findMany: jest.fn(),
+    download: jest.fn(),
   },
 };
 
