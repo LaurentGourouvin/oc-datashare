@@ -1,0 +1,42 @@
+.register__wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.register__card {
+    background: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.register__title {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.register__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.register__link {
+    text-align: center;
+    color: var(--color-primary);
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.register__link:hover {
+    text-decoration: underline;
+}

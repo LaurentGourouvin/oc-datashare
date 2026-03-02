@@ -1,0 +1,33 @@
+:root {
+    --gradient: linear-gradient(135deg, #FFB88C, #DE6262);
+    --color-primary: #DE6262;
+    --color-primary-light: #FFB88C;
+    --color-text: #1a1a1a;
+    --color-text-light: #666;
+    --color-white: #ffffff;
+    --color-input-bg: #fafafa;
+    --color-border: #e8e8e8;
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px;
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+.gradient-bg {
+    background: var(--gradient);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
