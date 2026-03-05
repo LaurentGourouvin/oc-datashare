@@ -3,14 +3,17 @@ import Header from '../../components/Header/Header';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import './Register.css';
+import { register } from "../../services/Auth/auth.service";
 
 export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         console.log({ email, password, confirmPassword });
+        const res = await register(email, password)
+        console.log(res)
     };
 
     return (
