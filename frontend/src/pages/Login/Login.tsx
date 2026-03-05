@@ -3,13 +3,15 @@ import Header from '../../components/Header/Header';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import './Login.css';
+import { login } from '../../services/Auth/auth.service';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = () => {
-        console.log({ email, password });
+    const handleSubmit = async () => {
+        const res = await login(email, password)
+        console.log(res)
     };
 
     return (
