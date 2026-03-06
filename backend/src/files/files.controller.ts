@@ -32,6 +32,7 @@ import {
   FilesService,
   UploadResult,
   HistoryResult,
+  MetadataResult,
 } from './files.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -174,5 +175,14 @@ export class FilesController {
   @ApiResponse({ status: 410, description: 'Link has expired' })
   async download(@Param('token') token: string): Promise<StreamableFile> {
     return this.filesService.download(token);
+  }
+
+  @Get('metadata/:token')
+  @ApiOperation({ summary: 'Get file metadata by token' })
+  @ApiResponse({ status: 200, description: 'File metadata' })
+  @ApiResponse({ status: 404, description: 'File not found' })
+  @ApiResponse({ status: 410, description: 'Link has expired' })
+  async metadata(@Param('token') token: string): Promise<MetadataResult> {
+    return this.filesService.getMetadata(token);
   }
 }

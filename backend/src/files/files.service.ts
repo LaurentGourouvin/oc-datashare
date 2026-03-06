@@ -49,6 +49,13 @@ export interface HistoryResult {
   data: HistoryResultSafer[];
 }
 
+export interface MetadataResult {
+  originalName: string;
+  mimeType: string;
+  size: number;
+  expiresAt: Date;
+}
+
 @Injectable()
 export class FilesService {
   private readonly logger = new Logger(FilesService.name);
@@ -138,6 +145,28 @@ export class FilesService {
         isExpired: file.expiresAt < new Date(),
       })),
     };
+  }
+
+  async getMetadata(token: string): Promise<MetadataResult> {
+    const file = await this.prisma.file.findUnique({
+      where: { token },
+      select: {
+        originalName: true,
+        mimeType: true,
+        size: true,
+        expiresAt: true,
+      },
+    });
+
+    if (!file) {
+      throw new NotFoundException('File not found.');
+    }
+
+    if (file.expiresAt < new Date()) {
+      throw new HttpException('Link has expired', HttpStatus.GONE);
+    }
+
+    return file;
   }
 
   async download(token: string): Promise<StreamableFile> {
