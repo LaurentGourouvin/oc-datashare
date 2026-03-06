@@ -31,3 +31,7 @@ export async function register(email: string, password: string): Promise<AuthRes
 
     return res.json();
 }
+
+export function saveToken(token: string) : void {
+    localStorage.setItem("auth_token", token);
+}
