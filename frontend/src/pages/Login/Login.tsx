@@ -58,7 +58,7 @@ export default function Login() {
                             {error && <Callout informationType={"error"} message={error} />}
 
                             <a className="login__link" href="/register">Créer un compte</a>
-                            <Button label="Connexion" type="submit" />
+                            <Button className="login__btn" label="Connexion" type="submit" />
                         </form>
                     </div>
                 </div>

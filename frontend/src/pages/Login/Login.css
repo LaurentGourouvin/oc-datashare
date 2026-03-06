@@ -33,11 +33,23 @@
 
 .login__link {
     text-align: center;
-    color: var(--color-primary);
-    font-size: 14px;
+    color: #E27F29;
+    font-size: 16px;
     text-decoration: none;
+    padding: 8px;
+    font-weight: 400;
 }
 
 .login__link:hover {
     text-decoration: underline;
+}
+
+.login__btn {
+    background: #FF812D21;
+    color: #BA681F;
+    border: 1px solid #CD5E1480;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 8px;
+    border-radius: 8px;
 }
