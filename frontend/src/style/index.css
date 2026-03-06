@@ -1,0 +1,68 @@
+:root {
+    --gradient: linear-gradient(135deg, #FFB88C, #DE6262);
+    --color-primary: #DE6262;
+    --color-primary-light: #FFB88C;
+    --color-text: #1a1a1a;
+    --color-text-light: #666;
+    --color-white: #ffffff;
+    --color-input-bg: #fafafa;
+    --color-border: #e8e8e8;
+    --color-error-background: #FFE2E2;
+    --color-error-border: #E8A6A6;
+    --color-error-text: #9C3333;
+    --color-info-background: #E2ECFF;
+    --color-info-border: #B1C9F5;
+    --color-info-text: #2A3F72;
+    --color-warning-background: #FFF5ED;
+    --color-warning-border: #E6CBB5;
+    --color-warning-text: #AA642B;
+    --border-radius-sm: 8px;
+    --border-radius-md: 16px;
+    --border-radius-lg: 24px;
+    --shadow-card: 0px 0px 12px 0px #00000040;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+.gradient-bg {
+    background: var(--gradient);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.callout_component {
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    gap: 8px;
+}
+
+.callout_component--error {
+    background: var(--color-error-background);
+    border: 1px solid var(--color-error-border);
+    color: var(--color-error-text);
+}
+
+.callout_component--info {
+    background: var(--color-info-background);
+    border: 1px solid var(--color-info-border);
+    color: var(--color-info-text);
+}
+
+.callout_component--warning {
+    background: var(--color-warning-background);
+    border: 1px solid var(--color-warning-border);
+    color: var(--color-warning-text);
+}
