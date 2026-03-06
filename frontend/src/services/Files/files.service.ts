@@ -5,6 +5,7 @@ export interface FileMetadata {
     size: number;
     expiresAt: string;
     mimeType: string;
+    hasPassword: boolean;
 }
 
 export async function getFileMetadata(token: string): Promise<FileMetadata> {

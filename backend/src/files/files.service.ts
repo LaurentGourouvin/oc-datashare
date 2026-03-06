@@ -54,6 +54,7 @@ export interface MetadataResult {
   mimeType: string;
   size: number;
   expiresAt: Date;
+  hasPassword: boolean;
 }
 
 @Injectable()
@@ -155,6 +156,7 @@ export class FilesService {
         mimeType: true,
         size: true,
         expiresAt: true,
+        filePassword: true,
       },
     });
 
@@ -166,7 +168,13 @@ export class FilesService {
       throw new HttpException('Link has expired', HttpStatus.GONE);
     }
 
-    return file;
+    return {
+      originalName: file.originalName,
+      mimeType: file.mimeType,
+      size: file.size,
+      expiresAt: file.expiresAt,
+      hasPassword: !!file.filePassword,
+    };
   }
 
   async download(token: string): Promise<StreamableFile> {

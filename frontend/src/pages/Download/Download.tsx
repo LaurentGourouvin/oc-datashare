@@ -5,22 +5,8 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Callout from '../../components/Callout/Callout';
 import './Download.css';
-import DownloadIcon from "../../assets/download_cloud.png";
-
-interface FileMetadata {
-    originalName: string;
-    size: number;
-    expiresAt: string;
-}
-
-function formatSize(bytes: number): string {
-    return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
-}
-
-function getDaysUntilExpiry(expiresAt: string): number {
-    const diff = new Date(expiresAt).getTime() - Date.now();
-    return Math.ceil(diff / (1000 * 60 * 60 * 24));
-}
+import {downloadFile, getFileMetadata, type FileMetadata} from "../../services/Files/files.service.ts";
+import { formatSize, getDaysUntilExpiry, getExpiryCallout } from '../../utils/files.utils';
 
 export default function Download() {
     const { token } = useParams<{ token: string }>();
@@ -29,13 +15,23 @@ export default function Download() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        // fetch metadata
+        if (!token) return;
+
+        getFileMetadata(token)
+            .then(setFile)
+            .catch((err: Error) => setError(err.message));
+
     }, [token]);
 
     const daysLeft = file ? getDaysUntilExpiry(file.expiresAt) : 0;
 
     const handleDownload = async () => {
-        // appel API download
+        if (!token) return;
+        try {
+            await downloadFile(token);
+        } catch (err: unknown) {
+            if (err instanceof Error) setError(err.message);
+        }
     };
 
     return (
@@ -44,7 +40,6 @@ export default function Download() {
             <div className="download__wrapper">
                 <div className="download__card">
                     <h1 className="download__title">Télécharger un fichier</h1>
-
                     {file && (
                         <>
                             <div className="download__file">
@@ -55,33 +50,27 @@ export default function Download() {
                                 </div>
                             </div>
 
-                            <Callout
-                                informationType={daysLeft <= 1 ? 'warning' : 'info'}
-                                message={
-                                    daysLeft <= 1
-                                        ? 'Ce fichier expirera demain.'
-                                        : `Ce fichier expirera dans ${daysLeft} jours.`
-                                }
-                            />
-
-                            <Input
-                                id="password"
-                                label="Mot de passe"
-                                type="password"
-                                placeholder="Saisissez le mot de passe..."
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                            {file.hasPassword && (
+                                <Input
+                                    id="password"
+                                    label="Mot de passe"
+                                    type="password"
+                                    placeholder="Saisissez le mot de passe..."
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            )}
                         </>
                     )}
 
+                    {file && (() => {
+                        const callout = getExpiryCallout(daysLeft);
+                        return callout ? <Callout informationType={callout.type} message={callout.message} /> : null;
+                    })()}
+
                     {error && <Callout informationType="error" message={error} />}
 
-                    <Button
-                        className="download__btn"
-                        label="Télécharger"
-                        onClick={handleDownload}
-                    />
+                    {daysLeft > 0 && <Button label="Télécharger" onClick={handleDownload} />}
                 </div>
             </div>
         </div>

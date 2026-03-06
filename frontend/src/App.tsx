@@ -8,7 +8,7 @@ export default function App() {
         <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/download" element={<Download />} />
+            <Route path="/download/:token" element={<Download />} />
         </Routes>
     );
 }
