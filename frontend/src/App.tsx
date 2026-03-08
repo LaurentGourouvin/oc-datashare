@@ -15,8 +15,7 @@ export default function App() {
             <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
             <Route path="/login" element={<GuestGuard><Login /></GuestGuard>} />
             <Route path="/register" element={<GuestGuard><Register /></GuestGuard>} />
-            <Route path="/download/:token" element={<AuthGuard><Download /></AuthGuard>} />
-            <Route path="/download" element={<AuthGuard><Download /></AuthGuard>} />
+            <Route path="/download/:token" element={<GuestGuard><Download /></GuestGuard>} />
             <Route path="/upload" element={<AuthGuard><Upload /></AuthGuard>} />
         </Routes>
     );
