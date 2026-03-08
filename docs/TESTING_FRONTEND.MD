@@ -46,22 +46,22 @@ Le rapport de couverture est généré dans `coverage/` après chaque exécution
 | Download | Token inexistant (404 mocké) | Affichage du Callout erreur |
 | Download | Fichier expiré (mocké) | Bouton télécharger absent |
 
-### Upload (upload.cy.ts) — à implémenter
+### Upload (upload.cy.ts)
 
 | Test | Scénario | Résultat attendu |
 |---|---|---|
-| Upload | Sélection d'un fichier valide | Affichage du nom et de la taille du fichier |
-| Upload | Soumission du formulaire | Lien de partage généré et affiché |
-| Upload | Fichier trop lourd (> 1 Go) | Affichage d'un message d'erreur |
+| Upload | Arrivée sur la page | Card "Ajouter un fichier" visible |
+| Upload | Sélection d'un fichier valide | Affichage du nom du fichier |
+| Upload | Soumission du formulaire (mocké) | Message de succès et lien affiché |
 | Upload | Sans être connecté | Redirection vers la page de login |
 
-### Dashboard (dashboard.cy.ts) — à implémenter
+### Dashboard (dashboard.cy.ts)
 
 | Test | Scénario | Résultat attendu |
 |---|---|---|
-| Historique | Affichage de la liste des fichiers | Les fichiers de l'utilisateur sont listés |
-| Historique | Filtre "Actifs" | Seuls les fichiers non expirés sont affichés |
-| Historique | Filtre "Expiré" | Seuls les fichiers expirés sont affichés |
+| Historique | Affichage de la liste des fichiers | 3 fichiers listés |
+| Historique | Filtre "Actifs" | 2 fichiers affichés |
+| Historique | Filtre "Expiré" | 1 fichier affiché |
 | Suppression | Clic sur "Supprimer" | Le fichier disparaît de la liste |
 | Sans être connecté | Accès direct à /dashboard | Redirection vers la page de login |
 
@@ -69,42 +69,39 @@ Le rapport de couverture est généré dans `coverage/` après chaque exécution
 
 ## Rapport de couverture
 
-> Généré le 07/03/2026 — `npm run cy:run`
+> Généré le 08/03/2026 via `npm run cy:run`
 
 ```
------------------------------|---------|----------|---------|---------|
-Fichier                      | % Lines | % Stmts  | % Funcs | % Branch|
------------------------------|---------|----------|---------|---------|
-All files                    |   73.63 |    73.17 |   86.20 |   62.79 |
- App.tsx                     |  100.00 |   100.00 |  100.00 |  100.00 |
- main.tsx                    |  100.00 |   100.00 |  100.00 |  100.00 |
- components/Button           |  100.00 |   100.00 |  100.00 |  100.00 |
- components/Callout          |  100.00 |   100.00 |  100.00 |  100.00 |
- components/Header           |  100.00 |   100.00 |  100.00 |   33.33 |
- components/Input            |  100.00 |   100.00 |  100.00 |    0.00 |
- pages/Download              |   75.00 |    69.23 |   71.42 |   70.58 |
- pages/Login                 |   93.33 |    94.11 |  100.00 |  100.00 |
- pages/Register              |   90.00 |    90.90 |  100.00 |  100.00 |
- services/Auth               |   50.00 |    50.00 |   66.66 |   50.00 |
- services/Files              |   33.33 |    33.33 |   50.00 |   28.57 |
- utils/files.utils           |   71.42 |    70.00 |  100.00 |   66.66 |
------------------------------|---------|----------|---------|---------|
+-------------------------------|---------|----------|---------|---------|
+Fichier                        | % Lines | % Stmts  | % Funcs | % Branch|
+-------------------------------|---------|----------|---------|---------|
+All files                      |   78.80 |    78.63 |   81.52 |   65.95 |
+ App.tsx                       |  100.00 |   100.00 |  100.00 |  100.00 |
+ main.tsx                      |  100.00 |   100.00 |  100.00 |  100.00 |
+ components/Button             |  100.00 |   100.00 |  100.00 |  100.00 |
+ components/Callout            |  100.00 |   100.00 |  100.00 |  100.00 |
+ components/Guards/AuthGuards  |  100.00 |   100.00 |  100.00 |  100.00 |
+ components/Guards/GuestGuards |   83.33 |    83.33 |  100.00 |    0.00 |
+ components/Header             |  100.00 |    90.00 |  100.00 |   62.50 |
+ components/Input              |  100.00 |   100.00 |  100.00 |    0.00 |
+ pages/Dashboard               |   63.88 |    69.04 |   47.61 |   76.66 |
+ pages/Download                |   75.00 |    69.23 |   71.42 |   70.58 |
+ pages/Home                    |   82.35 |    79.31 |   70.00 |   42.85 |
+ pages/Login                   |  100.00 |   100.00 |  100.00 |  100.00 |
+ pages/Register                |  100.00 |   100.00 |  100.00 |  100.00 |
+ pages/Upload                  |   89.79 |    79.01 |  100.00 |   59.09 |
+ services/Auth                 |   37.50 |    33.33 |  100.00 |   40.00 |
+ services/Files                |   33.33 |    33.33 |   50.00 |   28.57 |
+ utils/files.utils             |   71.42 |    70.00 |  100.00 |   66.66 |
+-------------------------------|---------|----------|---------|---------|
 ```
 
-**Seuil requis : 70% — Seuil atteint : 73.63%**
-
-### Points faibles identifiés
-
-| Fichier | Couverture | Raison |
-|---|---|---|
-| `services/Files/files.service.ts` | 33% | `downloadFile` non testée — déclenchement d'un téléchargement natif difficile à tester en E2E |
-| `services/Auth/auth.service.ts` | 50% | `register` non testée — à compléter avec les tests dashboard |
-| `components/Header` branches | 33% | Variante `dashboard` non visitée — couverte quand les pages dashboard/upload seront testées |
+**Seuil requis : 70% — Seuil atteint : 78.80%**
 
 ---
 
 ## Axes d'amélioration futurs
 
-- Implémenter les tests upload et dashboard pour augmenter la couverture des services
-- Ajouter des fixtures Cypress pour ne pas dépendre de données réelles en base
+- Ajouter des tests pour le menu mobile du dashboard
+- Tester les branches d'erreur des services Auth et Files
 - Mettre en place une GitHub Action pour lancer les tests E2E en mode headless avant chaque merge sur `main`
