@@ -15,7 +15,10 @@ export async function login(email: string, password: string): Promise<AuthRespon
         throw new Error('Email ou mot de passe incorrect.');
     }
 
-    return res.json();
+    const data: AuthResponse = await res.json();
+    saveToken(data.access_token)
+
+    return data;
 }
 
 export async function register(email: string, password: string): Promise<AuthResponse> {
@@ -29,9 +32,13 @@ export async function register(email: string, password: string): Promise<AuthRes
         throw new Error('Erreur lors de la création du compte.');
     }
 
-    return res.json();
+
+    const data: AuthResponse = await res.json();
+    saveToken(data.access_token)
+
+    return data;
 }
 
-export function saveToken(token: string) : void {
+function saveToken(token: string) : void {
     localStorage.setItem("auth_token", token);
 }

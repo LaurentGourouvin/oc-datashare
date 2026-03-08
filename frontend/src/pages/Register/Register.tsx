@@ -4,7 +4,7 @@ import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import Callout from '../../components/Callout/Callout';
 import './Register.css';
-import { register, saveToken } from "../../services/Auth/auth.service";
+import { register } from "../../services/Auth/auth.service";
 
 export default function Register() {
     const [email, setEmail] = useState('');
@@ -22,8 +22,7 @@ export default function Register() {
         }
 
         try {
-            const res = await register(email, password);
-            saveToken(res.access_token);
+            await register(email, password);
         } catch {
             setError('Erreur lors de la création du compte.');
         }
