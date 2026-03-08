@@ -15,6 +15,13 @@ export interface UploadResult {
     expiresAt: string;
 }
 
+export interface FileItem {
+    token: string;
+    originalName: string;
+    expiresAt: string;
+    isExpired: boolean;
+    hasPassword: boolean;
+}
 export async function getFileMetadata(token: string): Promise<FileMetadata> {
     const res = await fetch(`${API_URL}/files/metadata/${token}`);
 
@@ -79,4 +86,40 @@ export async function uploadFile(
     }
 
     return res.json();
+}
+
+export async function getHistory(): Promise<FileItem[]> {
+    const token = localStorage.getItem('auth_token');
+
+    const res = await fetch(`${API_URL}/files/history`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (res.status === 401) {
+        throw new Error('Vous devez être connecté.');
+    }
+
+    if (!res.ok) {
+        throw new Error('Erreur lors de la récupération des fichiers.');
+    }
+
+    const data = await res.json();
+    return data.data;
+}
+
+export async function deleteFile(token: string): Promise<void> {
+    const authToken = localStorage.getItem('auth_token');
+
+    const res = await fetch(`${API_URL}/files/${token}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${authToken}` },
+    });
+
+    if (res.status === 401) {
+        throw new Error('Vous devez être connecté.');
+    }
+
+    if (!res.ok) {
+        throw new Error('Erreur lors de la suppression du fichier.');
+    }
 }

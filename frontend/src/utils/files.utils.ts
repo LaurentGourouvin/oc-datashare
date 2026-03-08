@@ -13,3 +13,12 @@ export function getExpiryCallout(daysLeft: number): { type: 'info' | 'warning' |
     if (daysLeft <= 3) return { type: 'info', message: `Ce fichier expirera dans ${daysLeft} jours.` };
     return null;
 }
+
+export function getDaysLabel(expiresAt: string): string {
+    const now = Date.now();
+    const diff = new Date(expiresAt).getTime() - now;
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    if (days <= 0) return 'Expiré';
+    if (days === 1) return 'Expire demain';
+    return `Expire dans ${days} jours`;
+}
