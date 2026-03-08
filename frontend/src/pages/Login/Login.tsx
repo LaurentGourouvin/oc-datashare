@@ -5,11 +5,14 @@ import Button from '../../components/Button/Button';
 import './Login.css';
 import { login } from '../../services/Auth/auth.service';
 import Callout from "../../components/Callout/Callout.tsx";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -17,6 +20,7 @@ export default function Login() {
 
         try {
             await login(email, password);
+            navigate('/dashboard');
         } catch {
             setError('Email ou mot de passe incorrect.');
         }

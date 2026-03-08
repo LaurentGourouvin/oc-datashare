@@ -5,12 +5,14 @@ import Button from '../../components/Button/Button';
 import Callout from '../../components/Callout/Callout';
 import './Register.css';
 import { register } from "../../services/Auth/auth.service";
+import {useNavigate} from "react-router-dom";
 
 export default function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
@@ -23,6 +25,7 @@ export default function Register() {
 
         try {
             await register(email, password);
+            navigate('/dashboard');
         } catch {
             setError('Erreur lors de la création du compte.');
         }

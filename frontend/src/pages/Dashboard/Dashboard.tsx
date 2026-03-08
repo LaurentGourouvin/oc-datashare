@@ -76,7 +76,7 @@ export default function Dashboard() {
                 <header className="dashboard__header">
                     <button className="dashboard__hamburger" onClick={() => setSidebarOpen(true)}>☰</button>
                     <div className="dashboard__header-actions">
-                        <button className="dashboard__btn-add" onClick={() => navigate('/')}>
+                        <button className="dashboard__btn-add" onClick={() => navigate('/upload')}>
                             Ajouter des fichiers
                         </button>
                         <button className="dashboard__btn-logout" onClick={handleLogout}>
