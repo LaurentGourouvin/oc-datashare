@@ -88,7 +88,7 @@ cd k6
 k6 run upload-test.js
 ```
 
-Les résultats et leur analyse sont disponibles dans [`PERF.md`](PERF.MD).
+Les résultats et leur analyse sont disponibles dans [`PERF.md`](PERF.md).
 
 ## Workflow Git
 
