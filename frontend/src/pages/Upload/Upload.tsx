@@ -1,16 +1,12 @@
 import { useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import './Upload.css';
 import { uploadFile, type UploadResult } from '../../services/Files/files.service';
 
-type UploadState = 'selected' | 'error' | 'success';
+type UploadState = 'default' | 'selected' | 'error' | 'success';
 export default function Upload() {
-    const location = useLocation();
-    const initialFile = location.state?.file as File | undefined;
-
-    const [state, setState] = useState<UploadState>('selected');
-    const [file, setFile] = useState<File | null>(initialFile ?? null);
+    const [state, setState] = useState<UploadState>('default');
+    const [file, setFile] = useState<File | null>( null);
     const [password, setPassword] = useState('');
     const [expiration, setExpiration] = useState('1');
     const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
@@ -57,8 +53,19 @@ export default function Upload() {
 
     return (
         <div className="gradient-bg">
-            <Header variant="login" />
+            <Header />
             <div className="upload__wrapper">
+                {state === 'default' && (
+                    <div className="upload__card">
+                        <h1 className="upload__title">Ajouter un fichier</h1>
+                        <button
+                            className="upload__submit-btn"
+                            onClick={() => inputRef.current?.click()}
+                        >
+                            Choisir un fichier
+                        </button>
+                    </div>
+                )}
                 {(state === 'selected' || state === 'error') && (
                     <div className="upload__card">
                         <h1 className="upload__title">Ajouter un fichier</h1>
