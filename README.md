@@ -88,7 +88,7 @@ cd k6
 k6 run upload-test.js
 ```
 
-Les résultats et leur analyse sont disponibles dans [`PERF.md`](./PERF.md).
+Les résultats et leur analyse sont disponibles dans [`PERF.md`](PERF.MD).
 
 ## Workflow Git
 
@@ -137,7 +137,8 @@ datashare/
 
 ## Documentation
 
-- [`TESTING.md`](./docs/TESTING.md) : Plan de tests et couverture
-- [`SECURITY.md`](./docs/SECURITY.md) : Sécurité et vulnérabilités
-- [`PERF.md`](./docs/PERF.md) : Tests de performance
-- [`MAINTENANCE.md`](./docs/MAINTENANCE.md) : Procédures de maintenance
+- [`TESTING.md`](./TESTING.md) : Plan de tests et couverture
+- [`SECURITY.md`](./SECURITY.md) : Sécurité et vulnérabilités
+- [`PERF.md`](./PERF.md) : Tests de performance
+- [`MAINTENANCE.md`](./MAINTENANCE.md) : Procédures de maintenance
+- –[`API_CONTRACT.md`](./API_CONTRAT.md) : Contrat API
