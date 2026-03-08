@@ -8,6 +8,13 @@ export interface FileMetadata {
     hasPassword: boolean;
 }
 
+export interface UploadResult {
+    token: string;
+    originalName: string;
+    size: number;
+    expiresAt: string;
+}
+
 export async function getFileMetadata(token: string): Promise<FileMetadata> {
     const res = await fetch(`${API_URL}/files/metadata/${token}`);
 
@@ -44,4 +51,32 @@ export async function downloadFile(token: string): Promise<void> {
     a.download = '';
     a.click();
     URL.revokeObjectURL(url);
+}
+
+export async function uploadFile(
+    file: File,
+    password?: string,
+    expiresAt?: string
+): Promise<UploadResult> {
+    const token = localStorage.getItem('auth_token');
+    const formData = new FormData();
+    formData.append('file', file);
+    if (password) formData.append('password', password);
+    if (expiresAt) formData.append('expiresAt', expiresAt);
+
+    const res = await fetch(`${API_URL}/files/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+    });
+
+    if (res.status === 401) {
+        throw new Error('Vous devez être connecté pour envoyer un fichier.');
+    }
+
+    if (!res.ok) {
+        throw new Error("Erreur lors de l'envoi du fichier.");
+    }
+
+    return res.json();
 }

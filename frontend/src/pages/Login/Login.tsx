@@ -3,7 +3,7 @@ import Header from '../../components/Header/Header';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
 import './Login.css';
-import { login, saveToken } from '../../services/Auth/auth.service';
+import { login } from '../../services/Auth/auth.service';
 import Callout from "../../components/Callout/Callout.tsx";
 
 export default function Login() {
@@ -16,8 +16,7 @@ export default function Login() {
         setError('');
 
         try {
-            const res = await login(email, password);
-            saveToken(res.access_token);
+            await login(email, password);
         } catch {
             setError('Email ou mot de passe incorrect.');
         }
