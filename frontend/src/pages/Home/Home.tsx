@@ -7,7 +7,7 @@ export default function Home() {
 
     return (
         <div className="gradient-bg">
-            <Header variant="login" />
+            <Header />
             <div className="home__wrapper">
                 <p className="home__text">Tu veux partager un fichier ?</p>
                 <button className="home__circle-btn" onClick={() => navigate("/upload")}>
