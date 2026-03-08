@@ -64,8 +64,6 @@ Connexion d'un utilisateur existant.
 
 Upload d'un fichier par un utilisateur connecté.
 
-> ⚠️ US déléguée au copilote IA — voir `AGENTS.md`
-
 **Auth requise :** Oui (Bearer JWT)
 
 **Content-Type :** `multipart/form-data`
@@ -75,8 +73,8 @@ Upload d'un fichier par un utilisateur connecté.
 | Champ | Type | Requis | Description |
 |---|---|---|---|
 | `file` | File | ✅ | Le fichier à uploader (max 1 Go) |
-| `expiresIn` | number | ❌ | Durée en jours avant expiration (défaut : 7, max : 7) |
-| `filePassword` | string | ❌ | Mot de passe de protection (min 6 caractères) |
+| `expiresAt` | string (ISO 8601) | ❌ | Date d'expiration (min : +1 jour, max : +7 jours, défaut : +7 jours) |
+| `filePassword` | string | ❌ | Mot de passe de protection |
 
 **Réponses :**
 
@@ -89,7 +87,7 @@ Upload d'un fichier par un utilisateur connecté.
 
 ---
 
-### GET `/files`
+### GET `/files/history`
 
 Récupère l'historique des fichiers de l'utilisateur connecté.
 
@@ -104,23 +102,25 @@ Récupère l'historique des fichiers de l'utilisateur connecté.
 
 **Exemple de réponse 200 :**
 ```json
-[
-  {
-    "id": "uuid",
-    "token": "uuid",
-    "originalName": "photo.jpg",
-    "mimeType": "image/jpeg",
-    "size": 204800,
-    "expiresAt": "2026-03-05T10:00:00.000Z",
-    "createdAt": "2026-02-26T10:00:00.000Z",
-    "isExpired": false
-  }
-]
+{
+  "data": [
+    {
+      "token": "uuid",
+      "originalName": "photo.jpg",
+      "mimeType": "image/jpeg",
+      "size": 204800,
+      "expiresAt": "2026-03-05T10:00:00.000Z",
+      "createdAt": "2026-02-26T10:00:00.000Z",
+      "isExpired": false,
+      "hasPassword": false
+    }
+  ]
+}
 ```
 
 ---
 
-### DELETE `/files/:id`
+### DELETE `/files/:token`
 
 Supprime un fichier appartenant à l'utilisateur connecté.
 
@@ -130,13 +130,13 @@ Supprime un fichier appartenant à l'utilisateur connecté.
 
 | Paramètre | Type | Description |
 |---|---|---|
-| `id` | string (UUID) | L'identifiant du fichier |
+| `token` | string (UUID) | Le token unique du fichier |
 
 **Réponses :**
 
 | Code | Description | Body |
 |---|---|---|
-| 200 | Fichier supprimé | `{ "message": "File deleted successfully" }` |
+| 200 | Fichier supprimé | `{ "originalName": "photo.jpg" }` |
 | 401 | Non authentifié | `{ "message": "Unauthorized" }` |
 | 403 | Fichier d'un autre utilisateur | `{ "message": "Forbidden" }` |
 | 404 | Fichier introuvable | `{ "message": "File not found" }` |
@@ -155,33 +155,43 @@ Télécharge un fichier via son token public.
 |---|---|---|
 | `token` | string (UUID) | Le token unique de téléchargement |
 
-**Query params (optionnel) :**
-
-| Paramètre | Type | Description |
-|---|---|---|
-| `password` | string | Mot de passe si le fichier est protégé |
-
 **Réponses :**
 
 | Code | Description | Body |
 |---|---|---|
 | 200 | Fichier streamé | Binaire du fichier avec headers `Content-Disposition` |
-| 401 | Mot de passe incorrect | `{ "message": "Invalid password" }` |
 | 404 | Token invalide | `{ "message": "File not found" }` |
 | 410 | Lien expiré | `{ "message": "Link has expired" }` |
 
 ---
 
-### GET `/files/download/:token/info`
+### GET `/files/metadata/:token`
 
 Récupère les métadonnées d'un fichier avant téléchargement.
 
 **Auth requise :** Non
 
+**Paramètres :**
+
+| Paramètre | Type | Description |
+|---|---|---|
+| `token` | string (UUID) | Le token unique du fichier |
+
 **Réponses :**
 
 | Code | Description | Body |
 |---|---|---|
-| 200 | Métadonnées du fichier | `{ "originalName": "photo.jpg", "size": 204800, "mimeType": "image/jpeg", "expiresAt": "...", "isProtected": true }` |
+| 200 | Métadonnées du fichier | Voir exemple ci-dessous |
 | 404 | Token invalide | `{ "message": "File not found" }` |
 | 410 | Lien expiré | `{ "message": "Link has expired" }` |
+
+**Exemple de réponse 200 :**
+```json
+{
+  "originalName": "photo.jpg",
+  "mimeType": "image/jpeg",
+  "size": 204800,
+  "expiresAt": "2026-03-05T10:00:00.000Z",
+  "hasPassword": false
+}
+```
