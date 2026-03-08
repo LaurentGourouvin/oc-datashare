@@ -141,4 +141,4 @@ datashare/
 - [`SECURITY.md`](./SECURITY.md) : Sécurité et vulnérabilités
 - [`PERF.md`](./PERF.md) : Tests de performance
 - [`MAINTENANCE.md`](./MAINTENANCE.md) : Procédures de maintenance
-- –[`API_CONTRACT.md`](./API_CONTRAT.md) : Contrat API
+- [`API_CONTRACT.md`](./API_CONTRAT.md) : Contrat API
