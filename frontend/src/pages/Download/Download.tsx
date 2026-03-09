@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import Input from '../../components/Input/Input';
-import Button from '../../components/Button/Button';
 import Callout from '../../components/Callout/Callout';
 import './Download.css';
 import {downloadFile, getFileMetadata, type FileMetadata} from "../../services/Files/files.service.ts";
 import { formatSize, getDaysUntilExpiry, getExpiryCallout } from '../../utils/files.utils';
+import IconFile from "../../assets/image_file_icon.svg";
+import DownloadIcon from "../../assets/Upload_cloud.svg";
 
 export default function Download() {
     const { token } = useParams<{ token: string }>();
@@ -36,14 +37,16 @@ export default function Download() {
 
     return (
         <div className="gradient-bg">
-            <Header variant="login" />
+            <Header />
             <div className="download__wrapper">
                 <div className="download__card">
                     <h1 className="download__title">Télécharger un fichier</h1>
                     {file && (
                         <>
                             <div className="download__file">
-                                <span className="download__file-icon">🗎</span>
+                                <span className="download__file-icon">
+                                    <img src={IconFile} alt="Icon file"/>
+                                </span>
                                 <div>
                                     <p className="download__file-name">{file.originalName}</p>
                                     <p className="download__file-size">{formatSize(file.size)}</p>
@@ -70,7 +73,10 @@ export default function Download() {
 
                     {error && <Callout informationType="error" message={error} />}
 
-                    {daysLeft > 0 && <Button label="Télécharger" onClick={handleDownload} />}
+                    {daysLeft > 0 && <button onClick={handleDownload} className="download__btn">
+                        <img src={DownloadIcon} alt="Download icon"/>
+                        <p>Télécharger</p>
+                    </button>}
                 </div>
             </div>
         </div>

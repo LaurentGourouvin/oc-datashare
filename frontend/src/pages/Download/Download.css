@@ -60,4 +60,12 @@
     font-weight: 400;
     padding: 8px;
     border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.download__btn:hover {
+    cursor:pointer;
 }
