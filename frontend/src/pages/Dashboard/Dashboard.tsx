@@ -5,6 +5,7 @@ import {getDaysLabel} from "../../utils/files.utils.ts";
 import {deleteFile, getHistory} from "../../services/Files/files.service.ts";
 import IconFile from "../../assets/image_file_icon.svg";
 import IconTrash from "../../assets/Trash_2.svg";
+import LogoutIcon from "../../assets/Log_out.svg";
 
 type Filter = 'tous' | 'actifs' | 'expire';
 
@@ -82,7 +83,8 @@ export default function Dashboard() {
                             Ajouter des fichiers
                         </button>
                         <button className="dashboard__btn-logout" onClick={handleLogout}>
-                            ↪ Déconnexion
+                            <img src={LogoutIcon} alt="Log out icon"/>
+                            <p>Déconnexion</p>
                         </button>
                     </div>
                 </header>

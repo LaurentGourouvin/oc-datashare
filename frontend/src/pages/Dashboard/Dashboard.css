@@ -111,6 +111,8 @@
     color: var(--color-primary);
     font-size: 14px;
     cursor: pointer;
+    display: flex;
+    gap: 8px;
 }
 
 /* CONTENT */
