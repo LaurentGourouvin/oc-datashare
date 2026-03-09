@@ -35,12 +35,17 @@ jobs:
         working-directory: backend
         run: npm run build
 
+      - name: Compile prisma.config.ts
+        working-directory: backend
+        run: npx tsc prisma.config.ts --outDir . --module commonjs --target ES2023 --esModuleInterop true --skipLibCheck true --moduleResolution node
+
       - name: Compress build artifacts
         run: |
           tar -czf datashare-backend.tar.gz \
             -C backend \
             dist \
             prisma \
+            prisma.config.js \
             package.json \
             package-lock.json
 
