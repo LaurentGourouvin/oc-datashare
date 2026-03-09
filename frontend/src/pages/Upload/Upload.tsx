@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import Header from '../../components/Header/Header';
 import './Upload.css';
 import { uploadFile, type UploadResult } from '../../services/Files/files.service';
+import IconFile from "../../assets/image_file_icon.svg";
 
 type UploadState = 'default' | 'selected' | 'error' | 'success';
 export default function Upload() {
@@ -70,7 +71,9 @@ export default function Upload() {
                     <div className="upload__card">
                         <h1 className="upload__title">Ajouter un fichier</h1>
                         <div className="upload__file">
-                            <span className="upload__file-icon">🗎</span>
+                            <span className="upload__file-icon">
+                                <img src={IconFile} alt="Icon file"/>
+                            </span>
                             <div className="upload__file-info">
                                 <p className="upload__file-name">{file?.name}</p>
                                 <p className={`upload__file-size${state === 'error' ? ' upload__file-size--error' : ''}`}>

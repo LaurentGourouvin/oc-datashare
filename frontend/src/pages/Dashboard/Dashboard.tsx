@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './Dashboard.css';
 import {getDaysLabel} from "../../utils/files.utils.ts";
 import {deleteFile, getHistory} from "../../services/Files/files.service.ts";
+import IconFile from "../../assets/image_file_icon.svg";
+import IconTrash from "../../assets/Trash_2.svg";
 
 type Filter = 'tous' | 'actifs' | 'expire';
 
@@ -108,7 +110,9 @@ export default function Dashboard() {
                         {filteredFiles.map(file => (
                             <li key={file.token} className={`dashboard__item ${file.isExpired ? 'dashboard__item--expired' : ''}`}>
                                 <div className="dashboard__item-left">
-                                    <span className="dashboard__item-icon">🗎</span>
+                                    <span className="dashboard__item-icon">
+                                        <img src={IconFile} alt="icone file"/>
+                                    </span>
                                     <div>
                                         <p className="dashboard__item-name">{file.originalName}</p>
                                         <p className={`dashboard__item-status ${file.isExpired ? 'dashboard__item-status--expired' : ''}`}>
@@ -124,7 +128,8 @@ export default function Dashboard() {
                                     {!file.isExpired && (
                                         <div className="dashboard__item-actions">
                                             <button className="dashboard__btn-delete" onClick={() => handleDelete(file.token)}>
-                                                🗑 Supprimer
+                                                <img src={IconTrash} alt=""/>
+                                                <p>Supprimer</p>
                                             </button>
                                             <button className="dashboard__btn-access" onClick={() => navigate(`/download/${file.token}`)}>
                                                 Accéder →
