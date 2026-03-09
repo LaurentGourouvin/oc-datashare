@@ -84,7 +84,8 @@ jobs:
             npm ci --omit=dev
 
             # Run Prisma migrations
-            DATABASE_URL="$(grep '^DATABASE_URL' .env | cut -d= -f2-)" npx prisma migrate deploy
+            export DATABASE_URL=$(grep '^DATABASE_URL' .env | sed 's/\r//' | cut -d= -f2-)
+            npx prisma migrate deploy
 
             # Restart app with PM2 (install if needed)
             if ! command -v pm2 &> /dev/null; then
