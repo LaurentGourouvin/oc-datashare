@@ -28,7 +28,7 @@ export default function Login() {
 
     return (
         <div className="gradient-bg">
-            <Header variant="login" />
+            <Header />
                 <div className="login__wrapper">
                     <div className="login__card">
                         <h1 className="login__title">Connexion</h1>
