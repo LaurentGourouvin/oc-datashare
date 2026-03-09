@@ -152,20 +152,25 @@
 }
 
 .upload__copy-btn {
-    background: transparent;
-    border: 1px solid var(--color-primary);
-    color: var(--color-primary);
+    background: #FF812D21;
+    border: 1px solid #CD5E1480;
+    color: #BA681F;
     border-radius: var(--border-radius-sm);
     padding: 12px;
     font-size: 16px;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
 }
 
+/*
 .upload__copy-btn:hover {
     background: var(--color-primary);
     color: var(--color-white);
-}
+}*/
 
 .upload__footer {
     text-align: center;

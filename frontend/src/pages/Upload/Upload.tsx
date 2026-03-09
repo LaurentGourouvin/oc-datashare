@@ -4,6 +4,7 @@ import './Upload.css';
 import { uploadFile, type UploadResult } from '../../services/Files/files.service';
 import IconFile from "../../assets/image_file_icon.svg";
 import UploadIcon from "../../assets/Upload_cloud.svg"
+import CopyIcon from "../../assets/Copy.svg";
 
 type UploadState = 'default' | 'selected' | 'error' | 'success';
 export default function Upload() {
@@ -112,7 +113,10 @@ export default function Upload() {
                         <a className="upload__link" href={`/download/${uploadResult.token}`} target="_blank" rel="noreferrer">
                             {`${window.location.origin}/download/${uploadResult.token}`}
                         </a>
-                        <button className="upload__copy-btn" onClick={handleCopyLink}>📋 Copier le lien</button>
+                        <button className="upload__copy-btn" onClick={handleCopyLink}>
+                            <img src={CopyIcon} alt="Copy icon"/>
+                            <p>Copier le lien</p>
+                        </button>
                     </div>
                 )}
             </div>
