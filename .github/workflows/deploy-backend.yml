@@ -42,7 +42,7 @@ jobs:
             -C backend \
             dist \
             prisma \
-            prisma.config.ts \
+            prisma.config.mjs \
             package.json \
             package-lock.json
 
