@@ -2,6 +2,9 @@ import { useState, useRef } from 'react';
 import Header from '../../components/Header/Header';
 import './Upload.css';
 import { uploadFile, type UploadResult } from '../../services/Files/files.service';
+import IconFile from "../../assets/image_file_icon.svg";
+import UploadIcon from "../../assets/Upload_cloud.svg"
+import CopyIcon from "../../assets/Copy.svg";
 
 type UploadState = 'default' | 'selected' | 'error' | 'success';
 export default function Upload() {
@@ -70,7 +73,9 @@ export default function Upload() {
                     <div className="upload__card">
                         <h1 className="upload__title">Ajouter un fichier</h1>
                         <div className="upload__file">
-                            <span className="upload__file-icon">🗎</span>
+                            <span className="upload__file-icon">
+                                <img src={IconFile} alt="Icon file"/>
+                            </span>
                             <div className="upload__file-info">
                                 <p className="upload__file-name">{file?.name}</p>
                                 <p className={`upload__file-size${state === 'error' ? ' upload__file-size--error' : ''}`}>
@@ -88,7 +93,10 @@ export default function Upload() {
                             <option value="3">3 jours</option>
                             <option value="7">Une semaine</option>
                         </select>
-                        <button className="upload__submit-btn" onClick={handleUpload} disabled={state === 'error'}>⬆ Téléverser</button>
+                        <button className="upload__submit-btn" onClick={handleUpload} disabled={state === 'error'}>
+                            <img src={UploadIcon} alt="Upload icon"/>
+                           <p>Téléverser</p>
+                        </button>
                     </div>
                 )}
                 {state === 'success' && uploadResult && (
@@ -105,7 +113,10 @@ export default function Upload() {
                         <a className="upload__link" href={`/download/${uploadResult.token}`} target="_blank" rel="noreferrer">
                             {`${window.location.origin}/download/${uploadResult.token}`}
                         </a>
-                        <button className="upload__copy-btn" onClick={handleCopyLink}>📋 Copier le lien</button>
+                        <button className="upload__copy-btn" onClick={handleCopyLink}>
+                            <img src={CopyIcon} alt="Copy icon"/>
+                            <p>Copier le lien</p>
+                        </button>
                     </div>
                 )}
             </div>
