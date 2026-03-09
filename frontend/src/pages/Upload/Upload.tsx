@@ -3,6 +3,7 @@ import Header from '../../components/Header/Header';
 import './Upload.css';
 import { uploadFile, type UploadResult } from '../../services/Files/files.service';
 import IconFile from "../../assets/image_file_icon.svg";
+import UploadIcon from "../../assets/Upload_cloud.svg"
 
 type UploadState = 'default' | 'selected' | 'error' | 'success';
 export default function Upload() {
@@ -91,7 +92,10 @@ export default function Upload() {
                             <option value="3">3 jours</option>
                             <option value="7">Une semaine</option>
                         </select>
-                        <button className="upload__submit-btn" onClick={handleUpload} disabled={state === 'error'}>⬆ Téléverser</button>
+                        <button className="upload__submit-btn" onClick={handleUpload} disabled={state === 'error'}>
+                            <img src={UploadIcon} alt="Upload icon"/>
+                           <p>Téléverser</p>
+                        </button>
                     </div>
                 )}
                 {state === 'success' && uploadResult && (
