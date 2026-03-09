@@ -3,7 +3,7 @@ name: Deploy Backend to Lightsail
 on:
   push:
     branches:
-      - main
+      - deploy
     paths:
       - 'backend/**'
 
