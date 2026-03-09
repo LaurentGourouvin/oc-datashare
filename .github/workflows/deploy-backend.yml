@@ -1,0 +1,96 @@
+name: Deploy Backend to Lightsail
+
+on:
+  push:
+    branches:
+      - deploy
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Build
+        working-directory: backend
+        run: npm run build
+
+      - name: Compress build artifacts
+        run: |
+          tar -czf datashare-backend.tar.gz \
+            -C backend \
+            dist \
+            prisma \
+            package.json \
+            package-lock.json
+
+      - name: Upload archive to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          source: datashare-backend.tar.gz
+          target: /tmp/
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USER }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          script: |
+            set -e
+
+            APP_DIR=/var/www/datashare-api
+            DEPLOY_TMP=/tmp/datashare-backend-deploy
+
+            # Extract archive
+            mkdir -p $DEPLOY_TMP
+            tar -xzf /tmp/datashare-backend.tar.gz -C $DEPLOY_TMP
+
+            # Deploy files
+            sudo mkdir -p $APP_DIR/uploads
+            sudo rsync -a --delete \
+              --exclude uploads \
+              $DEPLOY_TMP/ $APP_DIR/
+            sudo chown -R $USER:$USER $APP_DIR
+
+            # Write .env from secret
+            echo "${{ secrets.BACKEND_ENV }}" | sudo tee $APP_DIR/.env > /dev/null
+
+            # Install production dependencies
+            cd $APP_DIR
+            npm ci --omit=dev
+
+            # Run Prisma migrations
+            npx prisma migrate deploy
+
+            # Restart app with PM2 (install if needed)
+            if ! command -v pm2 &> /dev/null; then
+              sudo npm install -g pm2
+            fi
+
+            pm2 describe datashare-api > /dev/null 2>&1 \
+              && pm2 restart datashare-api \
+              || pm2 start dist/main.js --name datashare-api
+
+            pm2 save
+
+            # Cleanup
+            rm -rf $DEPLOY_TMP /tmp/datashare-backend.tar.gz
