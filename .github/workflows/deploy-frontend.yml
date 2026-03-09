@@ -3,7 +3,7 @@ name: Deploy Frontend to Lightsail
 on:
   push:
     branches:
-      - deploy
+      - main
     paths:
       - 'frontend/**'
 

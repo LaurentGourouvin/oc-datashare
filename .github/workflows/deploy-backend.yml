@@ -3,7 +3,7 @@ name: Deploy Backend to Lightsail
 on:
   push:
     branches:
-      - deploy
+      - main
     paths:
       - 'backend/**'
 
@@ -76,7 +76,7 @@ jobs:
 
             # Start PostgreSQL via docker-compose (si pas déjà démarré)
             REPO_DIR=~/apps/datashare
-            docker compose -f $REPO_DIR/docker-compose.yml up -d
+            docker-compose -f $REPO_DIR/docker-compose.yml up -d
 
             # Install production dependencies
             cd $APP_DIR
