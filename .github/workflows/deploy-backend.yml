@@ -95,9 +95,8 @@ jobs:
               sudo npm install -g pm2
             fi
 
-            pm2 describe datashare-api > /dev/null 2>&1 \
-              && pm2 restart datashare-api \
-              || pm2 start dist/src/main.js --name datashare-api
+            pm2 delete datashare-api 2>/dev/null || true
+            pm2 start dist/src/main.js --name datashare-api --cwd $APP_DIR
 
             pm2 save
 
