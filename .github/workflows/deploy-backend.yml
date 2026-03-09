@@ -44,6 +44,7 @@ jobs:
             prisma \
             generated \
             prisma.config.js \
+            ecosystem.config.cjs \
             package.json \
             package-lock.json
 
@@ -96,7 +97,7 @@ jobs:
             fi
 
             pm2 delete datashare-api 2>/dev/null || true
-            pm2 start dist/src/main.js --name datashare-api --cwd $APP_DIR
+            pm2 start $APP_DIR/ecosystem.config.cjs
 
             pm2 save
 
