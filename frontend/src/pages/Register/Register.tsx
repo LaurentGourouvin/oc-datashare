@@ -33,7 +33,7 @@ export default function Register() {
 
     return (
         <div className="gradient-bg">
-            <Header variant="login" />
+            <Header />
             <div className="register__wrapper">
                 <div className="register__card">
                     <h1 className="register__title">Créer un compte</h1>
