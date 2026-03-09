@@ -79,10 +79,6 @@ jobs:
             # Write .env from secret
             echo "${{ secrets.BACKEND_ENV }}" | sudo tee $APP_DIR/.env > /dev/null
 
-            # Start PostgreSQL via docker-compose (si pas déjà démarré)
-            REPO_DIR=~/apps/datashare
-            docker-compose -f $REPO_DIR/docker-compose.yml up -d
-
             # Install production dependencies
             cd $APP_DIR
             npm ci --omit=dev
